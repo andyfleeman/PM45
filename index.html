@@ -269,7 +269,7 @@ function switchTab(v){
   $('score').style.background = v==='a' ? '#e8c84a' : '#52b788';
   $('score').style.color = v==='a' ? '#1a1a2e' : '#fff';
   syncBar(v);
-  if(!st[v].built){ buildQuiz(v); }
+  if(!st[v].built){ buildQuiz(v); attachDelegation(v); }
   window.scrollTo(0, 0);
 }
  
