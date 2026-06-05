@@ -390,7 +390,7 @@ function attachDelegation(v){
 function doMC(v, i, sel){
   var card = $(v + '-q-' + i);
   if(!card || card.classList.contains('ok') || card.classList.contains('ng')) return;
-  var q = (v==='a' ? QA : QB)[i];
+  var q = (v==='a' ? QA : (v==='b' ? QB : QC))[i];
   /* lock all opts */
   var opts = card.querySelectorAll('.opt');
   for(var k = 0; k < opts.length; k++){
@@ -416,7 +416,7 @@ function doMC(v, i, sel){
 function doTF(v, i, sel){
   var card = $(v + '-q-' + i);
   if(!card || card.classList.contains('ok') || card.classList.contains('ng')) return;
-  var q = (v==='a' ? QA : QB)[i];
+  var q = (v==='a' ? QA : (v==='b' ? QB : QC))[i];
   /* lock */
   var tfos = card.querySelectorAll('.tfo');
   for(var k = 0; k < tfos.length; k++) tfos[k].classList.add('done');
