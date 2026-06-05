@@ -295,7 +295,7 @@ function switchTab(v){
   $('score').style.background = v==='a' ? '#e8c84a' : (v==='b' ? '#52b788' : '#7c3aed');
   $('score').style.color = v==='a' ? '#1a1a2e' : '#fff';
   syncBar(v);
-  if(!st[v].built){ buildQuiz(v); attachDelegation(v); }
+  if(!st[v].built){ buildQuiz(v); attachDelegation(v); restoreProgress(v); }
   window.scrollTo(0, 0);
 }
  
@@ -409,6 +409,7 @@ function doMC(v, i, sel){
   }
   /* tick radio */
   if(selOpt){ var inp2=selOpt.querySelector('input'); if(inp2) inp2.checked=true; }
+  saveProgress(v, i, ok, sel, 'mc');
   record(v, i, ok, q.explanation);
 }
  
@@ -425,9 +426,78 @@ function doTF(v, i, sel){
   var okEl  = card.querySelector('.tfo[data-a="' + q.answer + '"]');
   if(selEl) selEl.classList.add(ok ? 's-ok' : 's-ng');
   if(!ok && okEl) okEl.classList.add('r-ok');
+  saveProgress(v, i, ok, sel, 'tf');
   record(v, i, ok, q.explanation);
 }
  
+/* persist progress to localStorage */
+function saveProgress(v, i, ok, sel, type){
+  try{
+    var key='pm45_v_'+v;
+    var data;
+    try{ data=JSON.parse(localStorage.getItem(key)||'{"a":{}}'); }catch(e){ data={a:{}}; }
+    if(!data.a) data.a={};
+    data.a[String(i)]={ok:ok,sel:sel,type:type};
+    localStorage.setItem(key,JSON.stringify(data));
+  }catch(e){}
+}
+
+/* restore saved progress after buildQuiz */
+function restoreProgress(v){
+  var raw;
+  try{ raw=localStorage.getItem('pm45_v_'+v); }catch(e){ return; }
+  if(!raw) return;
+  var data;
+  try{ data=JSON.parse(raw); }catch(e){ return; }
+  var saved=data.a||{};
+  var qs=v==='a'?QA:(v==='b'?QB:QC);
+  var keys=Object.keys(saved);
+  for(var ki=0;ki<keys.length;ki++){
+    var idx=keys[ki];
+    var a=saved[idx];
+    var i=parseInt(idx,10);
+    if(i<0||i>=qs.length) continue;
+    var q=qs[i];
+    var card=$(v+'-q-'+i);
+    if(!card||card.classList.contains('ok')||card.classList.contains('ng')) continue;
+    if(a.type==='mc'){
+      var opts=card.querySelectorAll('.opt');
+      for(var k=0;k<opts.length;k++){
+        opts[k].classList.add('done');
+        var inp=opts[k].querySelector('input');
+        if(inp) inp.disabled=true;
+      }
+      var selOpt=card.querySelector('.opt[data-o="'+a.sel+'"]');
+      if(selOpt) selOpt.classList.add(a.ok?'s-ok':'s-ng');
+      if(!a.ok){
+        var rkOpt=card.querySelector('.opt[data-o="'+q.answer+'"]');
+        if(rkOpt) rkOpt.classList.add('r-ok');
+      }
+      if(selOpt){ var ri=selOpt.querySelector('input'); if(ri) ri.checked=true; }
+    } else {
+      var tfos=card.querySelectorAll('.tfo');
+      for(var k2=0;k2<tfos.length;k2++) tfos[k2].classList.add('done');
+      var selEl=card.querySelector('.tfo[data-a="'+a.sel+'"]');
+      var okEl=card.querySelector('.tfo[data-a="'+q.answer+'"]');
+      if(selEl) selEl.classList.add(a.ok?'s-ok':'s-ng');
+      if(!a.ok&&okEl) okEl.classList.add('r-ok');
+    }
+    card.classList.add(a.ok?'ok':'ng');
+    var fb=$(v+'-fb-'+i);
+    if(fb){
+      fb.className='fb '+(a.ok?'ok':'ng');
+      var fv=$(v+'-fv-'+i); var fe=$(v+'-fe-'+i);
+      if(fv) fv.textContent=a.ok?'✓ Correct!':'✗ Incorrect';
+      if(fe) fe.textContent=q.explanation;
+      fb.style.display='block';
+    }
+    st[v].score+=a.ok?1:0;
+    st[v].done++;
+  }
+  syncBar(v);
+  if(st[v].done===TOTAL) showResult(v);
+}
+
 /* record result */
 function record(v, i, ok, expl){
   if(ok) st[v].score++;
@@ -463,6 +533,7 @@ function showResult(v){
  
 /* reset */
 function resetQuiz(v){
+  try{ localStorage.removeItem('pm45_v_'+v); }catch(e){}
   st[v].score = 0; st[v].done = 0; st[v].built = false;
   var res = $('res-' + v);
   if(res) res.style.display = 'none';
@@ -480,9 +551,10 @@ $('rst-a').addEventListener('click', function(){ resetQuiz('a'); });
 $('rst-b').addEventListener('click', function(){ resetQuiz('b'); });
 $('rst-c').addEventListener('click', function(){ resetQuiz('c'); });
  
-/* Build version A immediately, attach delegation */
+/* Build version A immediately, restore any saved progress */
 buildQuiz('a');
 attachDelegation('a');
+restoreProgress('a');
 syncBar('a');
 </script>
 </body>
