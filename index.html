@@ -43,6 +43,15 @@ body{font-family:Georgia,serif;background:#f1f3f5;color:#111;min-height:100vh}
   min-width:66px;text-align:center;
   transition:background .3s,color .3s;
 }
+#rst-top{
+  background:transparent;border:1px solid rgba(255,255,255,.3);
+  border-radius:6px;color:#ccd;font-size:1.05rem;
+  padding:4px 8px;cursor:pointer;touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  transition:background .15s,border-color .15s;
+  -webkit-appearance:none;appearance:none;
+}
+#rst-top:active{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.5)}
  
 /* MAIN */
 #main{max-width:860px;margin:0 auto;padding:70px 12px 60px}
@@ -188,6 +197,7 @@ body{font-family:Georgia,serif;background:#f1f3f5;color:#111;min-height:100vh}
     <div id="score-box">
       <span id="answered">0 of 100 answered</span>
       <span id="score">0 / 100</span>
+      <button id="rst-top" title="Reset this version">&#8635;</button>
     </div>
   </div>
 </div>
@@ -550,6 +560,7 @@ $('tab-c').addEventListener('click', function(){ switchTab('c'); });
 $('rst-a').addEventListener('click', function(){ resetQuiz('a'); });
 $('rst-b').addEventListener('click', function(){ resetQuiz('b'); });
 $('rst-c').addEventListener('click', function(){ resetQuiz('c'); });
+$('rst-top').addEventListener('click', function(){ resetQuiz(cur); });
  
 /* Build version A immediately, restore any saved progress */
 buildQuiz('a');
