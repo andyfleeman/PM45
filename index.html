@@ -200,7 +200,8 @@ body{font-family:Georgia,serif;background:#f1f3f5;color:#111;min-height:100vh}
   #pair-row{padding:5px 10px 3px;gap:2px}
   .pair{padding:3px 7px;font-size:.66rem}
   #bar-inner{padding:7px 10px}
-  .tab{padding:6px 12px;font-size:.82rem}
+  .tab{padding:6px 11px;font-size:.82rem}
+  .vl{display:none}
   #answered{display:none}
   #score{font-size:.85rem;min-width:58px;padding:4px 10px}
   #main{padding:96px 10px 52px}
@@ -227,10 +228,10 @@ body{font-family:Georgia,serif;background:#f1f3f5;color:#111;min-height:100vh}
   </div>
   <div id="bar-inner">
     <div id="tabs">
-      <button class="tab on-a" id="tab-a">Version A</button>
-      <button class="tab" id="tab-b">Version B</button>
-      <button class="tab" id="tab-c">Version C</button>
-      <button class="tab" id="tab-d">Version D</button>
+      <button class="tab on-a" id="tab-a"><span class="vl">Version </span>A</button>
+      <button class="tab" id="tab-b"><span class="vl">Version </span>B</button>
+      <button class="tab" id="tab-c"><span class="vl">Version </span>C</button>
+      <button class="tab" id="tab-d"><span class="vl">Version </span>D</button>
     </div>
     <div id="score-box">
       <span id="answered">0 answered</span>
