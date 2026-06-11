@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PM 6353 Practice Exams &mdash; ISBA 6353</title>
+<title>ISBA 6353 &mdash; PM Practice Exams</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='16' fill='%231a1a2e'/%3E%3Ctext x='50' y='42' font-family='Georgia%2Cserif' font-size='27' font-weight='bold' fill='%23e8c84a' text-anchor='middle'%3EISBA%3C/text%3E%3Ctext x='50' y='76' font-family='Georgia%2Cserif' font-size='29' font-weight='bold' fill='%23e8c84a' text-anchor='middle'%3E6353%3C/text%3E%3C/svg%3E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ISBA 6353">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a1a2e">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;-webkit-text-size-adjust:100%}
@@ -1043,6 +1049,33 @@ buildQuiz('a45');
 attachDelegation('a45');
 restoreProgress('a45');
 syncBar('a45');
+
+/* ── Home screen / PWA icon ── */
+(function(){
+  var COVER = 'https://m.media-amazon.com/images/I/81H3wkK2BXL._AC_UF1000,1000_QL80_.jpg';
+  function applyIcon(url){
+    var a = document.createElement('link');
+    a.rel = 'apple-touch-icon'; a.href = url;
+    document.head.appendChild(a);
+  }
+  var img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = function(){
+    try{
+      var sz = 512;
+      var c = document.createElement('canvas');
+      c.width = c.height = sz;
+      var ctx = c.getContext('2d');
+      var iw = img.naturalWidth, ih = img.naturalHeight;
+      var scale = Math.max(sz/iw, sz/ih);
+      var dw = iw*scale, dh = ih*scale;
+      ctx.drawImage(img, (sz-dw)/2, (sz-dh)/2, dw, dh);
+      applyIcon(c.toDataURL('image/jpeg', 0.88));
+    } catch(e){ applyIcon(COVER); }
+  };
+  img.onerror = function(){ applyIcon(COVER); };
+  img.src = COVER;
+})();
 </script>
 </body>
 </html>
